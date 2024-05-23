@@ -20,7 +20,8 @@ class CategoryResource extends JsonResource
             'name'            => $this->name,
             'parent_category' => new CategoryResource($this->whenLoaded('parent')),
             'sub_categories'  => CategoryResource::collection($this->whenLoaded('subCategories')),
-            //    'jobs'  => new JobResource($this->jobs)
+            'jobs'  => JobResource::collection($this->whenLoaded('jobs')),
+            'jobs_count' => $this->jobs()->count()
         ];
     }
 }

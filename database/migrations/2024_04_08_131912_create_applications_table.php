@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('cover_letters')->nullable();
             $table->string('notice_period');
             $table->string('application_date');
-            $table->float('expicted_salary');
+            $table->float('expected_salary');
             $table->longText('answers');
             $table->text('cv');
             $table->string('candidate_profile_link');

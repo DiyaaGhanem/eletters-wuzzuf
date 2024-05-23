@@ -12,12 +12,21 @@ class Job extends Model
 
     protected $table = 'jobs';
 
-    protected $fillable = ['title', 'department', 'job_type', 'country', 'job_location', 'job_requirement', 'job_level', 'skills_keys', 'job_questions', 'min_salary', 'max_salary', 'category_id', 'corporate_id'];
+    protected $fillable = ['title', 'status', 'department', 'job_type', 'country', 'job_location', 'job_requirement', 'job_level', 'job_questions', 'min_salary', 'max_salary', 'corporate_id'];
+    protected $casts = [
+        'job_questions' => 'array',
+    ];
 
-
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_jobs')
+            ->withTimestamps();
+    }
+
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class, 'job_skills')
+            ->withTimestamps();
     }
 
     public function corporate()

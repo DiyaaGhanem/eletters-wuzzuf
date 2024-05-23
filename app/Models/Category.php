@@ -27,6 +27,6 @@ class Category extends Model
 
     public function jobs()
     {
-        return $this->hasMany(Job::class);
+        return $this->belongsToMany(Job::class, 'category_jobs', 'job_id', 'category_id');
     }
 }

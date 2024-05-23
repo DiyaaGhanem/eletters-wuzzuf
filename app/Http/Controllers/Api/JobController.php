@@ -19,28 +19,43 @@ class JobController extends Controller
 
     public function index()
     {
-        $jobs = Job::with(['category', 'corporate'])->orderBy('id', 'DESC')->get();
+        $jobs = Job::with(['categories', 'skills', 'corporate', 'corporate.user'])->orderBy('id', 'DESC')->paginate(10);
 
-        return $this->success(status: Response::HTTP_OK, message: 'All Jobs.', data: JobResource::collection($jobs));
+        return $this->successPaginated(data: JobResource::collection($jobs), status: Response::HTTP_OK, message: 'All Jobs.');
+    }
+
+    public function jobsCount()
+    {
+        $jobsCount = Job::count();
+
+        return response()->json([
+            'status' => Response::HTTP_OK,
+            'message' => 'Number Of All Jobs.',
+            'data' =>  $jobsCount
+        ]);
     }
 
     public function createJob(JobRequest $request)
     {
         $data = $request->all();
         $job = Job::create($data);
+        $job->categories()->attach($data['category_id']);
+        $job->skills()->attach($data['skill_id']);
+        $job->load(['categories', 'skills', 'corporate', 'corporate.user']);
         return $this->success(status: Response::HTTP_OK, message: 'Job Created Successfully!!.', data: new JobResource($job));
     }
-
 
     public function updateJob(UpdateJobRequest $request)
     {
         $data = $request->all();
         $job = Job::findOrFail($data['job_id']);
         $job->update($data);
+        $job->categories()->sync($data['category_id']);
+        $job->skills()->sync($data['skill_id']);
 
+        $job->load(['categories', 'skills', 'corporate', 'corporate.user']);
         return $this->success(status: Response::HTTP_OK, message: 'Job Updated Successfully!!.', data: new JobResource($job));
     }
-
 
     public function softDeleteJob(GetJobByIdRequest $request)
     {
@@ -73,7 +88,7 @@ class JobController extends Controller
     public function getJobById(GetJobByIdRequest $request)
     {
         $data = $request->all();
-        $job = Job::where('id', $data['job_id'])->with('category', 'corporate')->first();
+        $job = Job::where('id', $data['job_id'])->with('categories', 'skills', 'corporate', 'corporate.user')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'Job Details.', data: new JobResource($job));
     }

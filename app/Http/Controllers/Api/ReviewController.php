@@ -18,18 +18,20 @@ class ReviewController extends Controller
 
     public function index()
     {
-        $reviews = Review::with(['application', 'interviews'])->orderBy('id', 'DESC')->get();
+        $reviews = Review::with(['application', 'application.user', 'interview'])->orderBy('id', 'DESC')->paginate(10);
 
-        return $this->success(status: Response::HTTP_OK, message: 'All Reviews.', data: ReviewResource::collection($reviews));
+        return $this->successPaginated(data: ReviewResource::collection($reviews), status: Response::HTTP_OK, message: 'All Reviews.');
     }
 
     public function createReview(ReviewRequest $request)
     {
         $data = $request->all();
         $review = Review::create($data);
+
+        $review->load('application', 'application.user');
+
         return $this->success(status: Response::HTTP_OK, message: 'Review Created Successfully!!.', data: new ReviewResource($review));
     }
-
 
     public function updateReview(UpdateReviewRequest $request)
     {
@@ -39,7 +41,6 @@ class ReviewController extends Controller
 
         return $this->success(status: Response::HTTP_OK, message: 'Review Updated Successfully!!.', data: new ReviewResource($review));
     }
-
 
     public function softDeleteReview(GetReviewByIdRequest $request)
     {
@@ -55,7 +56,6 @@ class ReviewController extends Controller
         return $this->success(status: Response::HTTP_OK, message: 'Review Deleted Successfully!!.', data: new ReviewResource($review));
     }
 
-
     public function restoreReview(GetReviewByIdRequest $request)
     {
 
@@ -70,11 +70,10 @@ class ReviewController extends Controller
         return $this->success(status: Response::HTTP_OK, message: 'Review Already Restored!!.', data: new ReviewResource($review));
     }
 
-
     public function getReviewById(GetReviewByIdRequest $request)
     {
         $data = $request->all();
-        $review = Review::where('id', $data['review_id'])->with('application', 'interviews')->first();
+        $review = Review::where('id', $data['review_id'])->with('application', 'interview')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'Review Details.', data: new ReviewResource($review));
     }

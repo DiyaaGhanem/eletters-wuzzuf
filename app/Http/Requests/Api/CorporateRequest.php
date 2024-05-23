@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
@@ -24,6 +25,8 @@ class CorporateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userConnection = (new User())->getConnectionName();
+        
         return [
             'name'              => 'required|unique:corporates,name',
             'tax_register'      => 'required|unique:corporates,tax_register',
@@ -35,7 +38,7 @@ class CorporateRequest extends FormRequest
             'phone'             => 'required|unique:corporates,phone',
             'email'             => 'required|unique:corporates,email',
             'status'            => 'required|in:Active,In Active,Blocked,Black Listed,Under Review,Not Completed',
-            'user_id'           => 'required',
+            'user_id'           => "required|exists:$userConnection.users,id",
             'logo'              => 'required|mimetypes:image/png,image/jpg,image/jpeg'
         ];
     }

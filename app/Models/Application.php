@@ -12,14 +12,16 @@ class Application extends Model
 
     protected $table = 'applications';
 
-    protected $fillable = ['cover_letters', 'notice_period', 'application_date', 'expicted_salary', 'answers', 'cv', 'candidate_profile_link', 'job_id', 'user_id'];
+    protected $fillable = ['cover_letters', 'notice_period', 'application_date', 'expected_salary', 'answers', 'cv', 'candidate_profile_link', 'job_id', 'user_id'];
 
+    protected $casts = [
+        'answers' => 'json'
+    ];
 
     public function job()
     {
         return $this->belongsTo(Job::class);
     }
-
 
     public function user()
     {

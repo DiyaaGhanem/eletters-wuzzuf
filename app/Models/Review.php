@@ -20,8 +20,8 @@ class Review extends Model
         return $this->belongsTo(Application::class);
     }
 
-    public function interviews()
+    public function interview()
     {
-        return $this->hasMany(Interview::class);
+        return $this->hasOne(Interview::class);
     }
 }

@@ -21,21 +21,9 @@ class CategoryController extends Controller
 
     public function index()
     {
-        // dd(auth()->guard('api')->user());
+        $categories = Category::orderBy('id', 'DESC')->with('parent')->with('subCategories.subCategories')->paginate(10);
 
-        // $payload = auth()->guard('api')->payload();
-
-        // // then you can access the claims directly e.g.
-        // $payload->get('sub'); // = 123
-        // $payload['jti']; // = 'asfe4fq434asdf'
-        // $payload('exp');
-
-
-        // dd($payload);
-
-        $categories = Category::orderBy('id', 'DESC')->with('parent')->with('subCategories.subCategories')->get();
-
-        return $this->success(status: Response::HTTP_OK, message: 'All Categories.', data: CategoryResource::collection($categories));
+        return $this->successPaginated(data: CategoryResource::collection($categories), status: Response::HTTP_OK, message: 'All Categories.');
     }
 
     public function createCategory(CategoryRequest $request)
@@ -87,7 +75,7 @@ class CategoryController extends Controller
     public function getCategoryById(GetCategoryByIdRequest $request)
     {
         $data = $request->all();
-        $category = Category::where('id', $data['category_id'])->with('parent')->with('subCategories.subCategories')->first();
+        $category = Category::where('id', $data['category_id'])->with(['parent', 'jobs', 'subCategories.subCategories'])->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'Category Details.', data: new CategoryResource($category));
     }

@@ -20,7 +20,7 @@ class ReviewResource extends JsonResource
             'notes' => $this->notes,
             'message' => $this->message,
             'application' => new ApplicationResource($this->whenLoaded('application')),
-            'interviews' => InterviewResource::collection($this->whenLoaded('interviews')),
+            'interview' => new InterviewResource($this->whenLoaded('interview')),
         ];
     }
 }

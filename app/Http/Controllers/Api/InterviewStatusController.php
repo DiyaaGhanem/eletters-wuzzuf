@@ -18,18 +18,20 @@ class InterviewStatusController extends Controller
 
     public function index()
     {
-        $interviewStatuses = InterviewStatus::with(['application'])->orderBy('id', 'DESC')->get();
+        $interviewStatuses = InterviewStatus::with(['application', 'application.user'])->orderBy('id', 'DESC')->paginate(10);
 
-        return $this->success(status: Response::HTTP_OK, message: 'All interview statuses.', data: InterviewStatusResource::collection($interviewStatuses));
+        return $this->successPaginated(data: InterviewStatusResource::collection($interviewStatuses), status: Response::HTTP_OK, message: 'All interview statuses.');
     }
 
     public function createInterviewStatus(InterviewStatusRequest $request)
     {
         $data = $request->all();
         $interview = InterviewStatus::create($data);
+
+        $interview->load('application', 'application.user');
+
         return $this->success(status: Response::HTTP_OK, message: 'Interview status Created Successfully!!.', data: new InterviewStatusResource($interview));
     }
-
 
     public function updateInteriewStatus(UpdateInterviewStatusRequest $request)
     {
@@ -37,9 +39,10 @@ class InterviewStatusController extends Controller
         $interview = InterviewStatus::findOrFail($data['interview_status_id']);
         $interview->update($data);
 
+        $interview->load('application', 'application.user');
+
         return $this->success(status: Response::HTTP_OK, message: 'Interview status Updated Successfully!!.', data: new InterviewStatusResource($interview));
     }
-
 
     public function softDeleteInteriewStatus(GetInterviewStatusByIdRequest $request)
     {
@@ -55,7 +58,6 @@ class InterviewStatusController extends Controller
         return $this->success(status: Response::HTTP_OK, message: 'Interview status Deleted Successfully!!.', data: new InterviewStatusResource($interview));
     }
 
-
     public function restoreInteriewStatus(GetInterviewStatusByIdRequest $request)
     {
 
@@ -70,11 +72,10 @@ class InterviewStatusController extends Controller
         return $this->success(status: Response::HTTP_OK, message: 'Interview status Already Restored!!.', data: new InterviewStatusResource($interview));
     }
 
-
     public function getInteriewStatusById(GetInterviewStatusByIdRequest $request)
     {
         $data = $request->all();
-        $interview = InterviewStatus::where('id', $data['interview_status_id'])->with('application')->first();
+        $interview = InterviewStatus::where('id', $data['interview_status_id'])->with('application', 'application.user')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'Interview status Details.', data: new InterviewStatusResource($interview));
     }

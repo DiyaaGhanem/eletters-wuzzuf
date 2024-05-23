@@ -30,7 +30,7 @@ class InterviewRequest extends FormRequest
             'date'      => 'required|date',
             'interview_mail' => 'required|string',
             'location'       => 'required|string',
-            'review_id'      => 'nullable|exists:reviews,id',
+            'review_id'      => 'required|exists:reviews,id',
         ];
     }
 

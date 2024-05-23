@@ -19,25 +19,28 @@ class ApplicationController extends Controller
 
     public function index()
     {
-        $applications = Application::with(['reviews', 'user', 'job'])->orderBy('id', 'DESC')->get();
+        $applications = Application::with(['reviews', 'user', 'job'])->orderBy('id', 'DESC')->paginate(10);
 
-        return $this->success(status: Response::HTTP_OK, message: 'All Applications.', data: ApplicationResource::collection($applications));
+        return $this->successPaginated(data: ApplicationResource::collection($applications), status: Response::HTTP_OK, message: 'All Applications.');
+
     }
-
 
     public function createApplication(ApplicationRequest $request)
     {
         $data = $request->all();
 
-        $cv_new_name = $data['cv']->hashName();
-        $data['cv']->move($this->createDirectory("applications/cvs"), $cv_new_name);
-        $data['cv'] = "applications/cvs/" . $cv_new_name;
-        $data['user_id'] = 1;
+        if (isset($data['cv'])) {
+            $cv_new_name = $data['cv']->hashName();
+            $data['cv']->move($this->createDirectory("applications/cvs"), $cv_new_name);
+            $data['cv'] = "applications/cvs/" . $cv_new_name;
+        }
 
         $application = Application::create($data);
+
+        $application->load('user');
+
         return $this->success(status: Response::HTTP_OK, message: 'Application Created Successfully!!.', data: new ApplicationResource($application));
     }
-
 
     public function updateApplication(UpdateApplicationRequest $request)
     {
@@ -57,7 +60,6 @@ class ApplicationController extends Controller
         return $this->success(status: Response::HTTP_OK, message: 'Application Updated Successfully!!.', data: new ApplicationResource($application));
     }
 
-
     public function softDeleteApplication(GetApplicationByIdRequest $request)
     {
 
@@ -72,7 +74,6 @@ class ApplicationController extends Controller
         return $this->success(status: Response::HTTP_OK, message: 'Application Deleted Successfully!!.', data: new ApplicationResource($application));
     }
 
-
     public function restoreApplication(GetApplicationByIdRequest $request)
     {
 
@@ -86,7 +87,6 @@ class ApplicationController extends Controller
 
         return $this->success(status: Response::HTTP_OK, message: 'Application Already Restored!!.', data: new ApplicationResource($application));
     }
-
 
     public function getApplicationById(GetApplicationByIdRequest $request)
     {

@@ -21,7 +21,7 @@ class InterviewResource extends JsonResource
             'date' => $this->date,
             'interview_mail' => $this->interview_mail,
             'location' => $this->location,
-            'review' => new ReviewResource($this->whenLoaded('application')),
+            'review' => new ReviewResource($this->whenLoaded('review')),
         ];
     }
 }

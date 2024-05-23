@@ -19,14 +19,14 @@ class ApplicationResource extends JsonResource
             'cover_letters' => $this->cover_letters,
             'notice_period' => $this->notice_period,
             'application_date' => $this->application_date,
-            'expicted_salary' => $this->expicted_salary,
+            'expected_salary' => $this->expected_salary,
             'answers' => $this->answers,
             'cv' => env("APP_URL") . "/uploads" . "/" . $this->cv,
-            // 'cv' => asset('uploads/cvs/' . $this->cv),
             'candidate_profile_link' => $this->candidate_profile_link,
             'job' => new JobResource($this->whenLoaded('job')),
             'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
-            // 'user' => new UserResource($this->whenLoaded('corporate')),
+            'user' => new UserResource($this->whenLoaded('user')),
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

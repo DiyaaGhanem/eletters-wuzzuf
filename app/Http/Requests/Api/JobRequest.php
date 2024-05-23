@@ -28,18 +28,18 @@ class JobRequest extends FormRequest
         return [
             'title'           => 'required|string',
             'department'      => 'required|string',
+            'status'          => 'nullable|in:Pending,Published,Rejected,Not Published',
             'job_type'        => 'required|string',
             'country'         => 'required|string',
             'job_location'    => 'required|string',
             'job_requirement' => 'required|string',
             'job_level'       => 'required|string',
-            'skills_keys'     => 'required|string',
-            'job_questions'   => 'required|string',
+            'job_questions'   => 'required|array',
             'min_salary'      => 'required|numeric',
             'max_salary'      => 'required|numeric',
-            'category_id'     => 'required|exists:categories,id',
+            'category_id'     => 'required|array|min:1|exists:categories,id',
+            'skill_id'        => 'required|array|min:1|exists:skills,id',
             'corporate_id'    => 'nullable|exists:corporates,id',
-
         ];
     }
 

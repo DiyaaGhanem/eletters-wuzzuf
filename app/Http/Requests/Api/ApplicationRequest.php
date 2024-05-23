@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
@@ -24,15 +25,18 @@ class ApplicationRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userConnection = (new User())->getConnectionName();
+
         return [
             'cover_letters'          => 'required|string',
             'notice_period'          => 'required|string',
             'application_date'       => 'required|date',
-            'expicted_salary'        => 'required|numeric',
-            'answers'                => 'required|string',
+            'expected_salary'        => 'required|numeric',
+            'answers'                => 'required',
             'cv'                     => 'required|mimes:pdf',
             'candidate_profile_link' => 'required|url',
             'job_id'                 => 'required|exists:jobs,id',
+            'user_id'           => "required|exists:$userConnection.users,id",
         ];
     }
 

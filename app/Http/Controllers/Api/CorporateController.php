@@ -19,9 +19,9 @@ class CorporateController extends Controller
 
     public function index()
     {
-        $corporates = Corporate::orderBy('id', 'DESC')->get();
-
-        return $this->success(status: Response::HTTP_OK, message: 'All Corporates.', data: CorporateResource::collection($corporates));
+        $corporates = Corporate::with('user')->orderBy('id', 'DESC')->paginate(10);
+        
+        return $this->successPaginated(data: CorporateResource::collection($corporates), status: Response::HTTP_OK, message: 'All Corporates.');
     }
 
     public function createCorporate(CorporateRequest $request)
@@ -33,6 +33,7 @@ class CorporateController extends Controller
         $data['logo'] = "corperates/logos/" . $logo_new_name;
 
         $corporate = Corporate::create($data);
+        $corporate->load('user');
 
         return $this->success(status: Response::HTTP_OK, message: 'Corporate Created Successfully!!.', data: new CorporateResource($corporate));
     }
@@ -44,13 +45,14 @@ class CorporateController extends Controller
 
         if ($request->hasFile('logo')) {
             $this->deleteFile($corporate->logo);
-            
+
             $logo_new_name = $data['logo']->hashName();
             $data['logo']->move($this->createDirectory("corperates/logos"), $logo_new_name);
             $data['logo'] = "corperates/logos/" . $logo_new_name;
         }
 
         $corporate->update($data);
+        $corporate->load('user');
 
         return $this->success(status: Response::HTTP_OK, message: 'Corporate Updated Successfully!!.', data: new CorporateResource($corporate));
     }
@@ -86,7 +88,7 @@ class CorporateController extends Controller
     public function getCorporateById(GetCorporateByIdRequest $request)
     {
         $data = $request->all();
-        $corporate = Corporate::findOrFail($data['corporate_id']);
+        $corporate = Corporate::with('user')->findOrFail($data['corporate_id']);
 
         return $this->success(status: Response::HTTP_OK, message: 'Corporate Details.', data: new CorporateResource($corporate));
     }

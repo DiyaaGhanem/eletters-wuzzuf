@@ -17,7 +17,7 @@ class CorporateResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'   => $this->id,
+            'id' => $this->id,
             'name' => $this->name,
             'tax_register' => $this->tax_register,
             'commercial_record' => $this->commercial_record,
@@ -28,7 +28,7 @@ class CorporateResource extends JsonResource
             'phone' => $this->phone,
             'email' => $this->email,
             'status' => $this->status,
-            'user'   => User::findOrFail($this->user_id)
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

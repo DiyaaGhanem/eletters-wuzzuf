@@ -1,12 +1,19 @@
 <?php
 
+use App\Http\Controllers\Api\ApplicantController;
+use App\Http\Controllers\Api\ApplicantEducationController;
+use App\Http\Controllers\Api\ApplicantExperienceController;
+use App\Http\Controllers\Api\ApplicantLanguagesController;
+use App\Http\Controllers\Api\ApplicantSkillsController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CorporateController;
 use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\InterviewStatusController;
 use App\Http\Controllers\Api\JobController;
+use App\Http\Controllers\Api\LanguageController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SkillController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,7 +34,9 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::middleware(['api', 'jwtMiddleware'])->group(function () {
+// Route::middleware(['api', 'jwtMiddleware'])->group(function () {
+Route::middleware(['api'])->group(function () {
+    
     /**************************************** Category Routes ***************************************************/
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('category/create', [CategoryController::class, 'createCategory']);
@@ -35,6 +44,20 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     Route::post('category/delete', [CategoryController::class, 'softDeleteCategory']);
     Route::post('category/restore', [CategoryController::class, 'restoreCategory']);
     Route::get('category/show', [CategoryController::class, 'getCategoryById']);
+
+    /**************************************** Language Routes ***************************************************/
+    Route::get('/languages', [LanguageController::class, 'index']);
+    Route::post('language/create', [LanguageController::class, 'createLanguage']);
+    Route::post('language/update', [LanguageController::class, 'updateLanguage']);
+    Route::post('language/delete', [LanguageController::class, 'deleteLanguage']);
+    Route::get('language/show', [LanguageController::class, 'getLanguageById']);
+
+    /**************************************** Skill Routes ***************************************************/
+    Route::get('/skills', [SkillController::class, 'index']);
+    Route::post('skill/create', [SkillController::class, 'createSkill']);
+    Route::post('skill/update', [SkillController::class, 'updateSkill']);
+    Route::post('skill/delete', [SkillController::class, 'deleteSkill']);
+    Route::get('skill/show', [SkillController::class, 'getSkillById']);
 
     /**************************************** Corporates Routes ***************************************************/
     Route::get('/corporates', [CorporateController::class, 'index']);
@@ -46,6 +69,7 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
 
     /**************************************** Jobs Routes ***************************************************/
     Route::get('/jobs', [JobController::class, 'index']);
+    Route::get('/jobs-count', [JobController::class, 'jobsCount']);
     Route::post('job/create', [JobController::class, 'createJob']);
     Route::post('job/update', [JobController::class, 'updateJob']);
     Route::post('job/delete', [JobController::class, 'softDeleteJob']);
@@ -83,4 +107,47 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     Route::post('interview-status/delete', [InterviewStatusController::class, 'softDeleteInteriewStatus']);
     Route::post('interview-status/restore', [InterviewStatusController::class, 'restoreInteriewStatus']);
     Route::get('interview-status/show', [InterviewStatusController::class, 'getInteriewStatusById']);
+
+    /**************************************** Applicants Routes ***************************************************/
+    Route::get('/applicants', [ApplicantController::class, 'index']);
+    Route::post('applicant/create', [ApplicantController::class, 'createApplicant']);
+    Route::post('applicant/update', [ApplicantController::class, 'updateApplicant']);
+    Route::post('applicant/delete', [ApplicantController::class, 'softDeleteApplicant']);
+    Route::post('applicant/restore', [ApplicantController::class, 'restoreApplicant']);
+    Route::get('applicant/show', [ApplicantController::class, 'getApplicantById']);
+
+    /**************************************** Education Routes ***************************************************/
+    Route::get('/educations', [ApplicantEducationController::class, 'index']);
+    Route::get('/get-educations-by-applicant', [ApplicantEducationController::class, 'getEducationsByApplicant']);
+    Route::post('education/create', [ApplicantEducationController::class, 'createEducation']);
+    Route::post('education/update', [ApplicantEducationController::class, 'updateEducation']);
+    Route::post('education/delete', [ApplicantEducationController::class, 'softDeleteEducation']);
+    Route::post('education/restore', [ApplicantEducationController::class, 'restoreEducation']);
+    Route::get('education/show', [ApplicantEducationController::class, 'getEducationById']);
+
+    /**************************************** Experiences Routes ***************************************************/
+    Route::get('/experience', [ApplicantExperienceController::class, 'index']);
+    Route::get('/get-experinces-by-applicant', [ApplicantExperienceController::class, 'getExperiencesByApplicant']);
+    Route::post('experience/create', [ApplicantExperienceController::class, 'createExperience']);
+    Route::post('experience/update', [ApplicantExperienceController::class, 'updateExperience']);
+    Route::post('experience/delete', [ApplicantExperienceController::class, 'softDeleteExperience']);
+    Route::post('experience/restore', [ApplicantExperienceController::class, 'restoreExperience']);
+    Route::get('experience/show', [ApplicantExperienceController::class, 'getExperienceById']);
+
+    /**************************************** Applicant Languages Routes ***************************************************/
+    Route::get('/applicant-languages', [ApplicantLanguagesController::class, 'index']);
+    Route::get('/get-applicant-languages-by-applicant', [ApplicantLanguagesController::class, 'getApplicantLanguagesByApplicant']);
+    Route::post('applicant-language/create', [ApplicantLanguagesController::class, 'createApplicantLanguage']);
+    Route::post('applicant-language/update', [ApplicantLanguagesController::class, 'updateApplicantLanguage']);
+    Route::post('applicant-language/delete', [ApplicantLanguagesController::class, 'deleteApplicantLanguage']);
+    Route::get('applicant-language/show', [ApplicantLanguagesController::class, 'getApplicantLanguageById']);
+
+    /**************************************** Applicant Skills Routes ***************************************************/
+    Route::get('/applicant-skills', [ApplicantSkillsController::class, 'index']);
+    Route::get('/get-applicant-skills-by-applicant', [ApplicantSkillsController::class, 'getApplicantSkillsByApplicant']);
+    Route::post('applicant-skill/create', [ApplicantSkillsController::class, 'createApplicantSkill']);
+    Route::post('applicant-skill/update', [ApplicantSkillsController::class, 'updateApplicantSkill']);
+    Route::post('applicant-skill/delete', [ApplicantSkillsController::class, 'deleteApplicantSkill']);
+    Route::get('applicant-skill/show', [ApplicantSkillsController::class, 'getApplicantSkillById']);
+
 });
