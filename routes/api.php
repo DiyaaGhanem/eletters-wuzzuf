@@ -32,11 +32,6 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-
-
-Route::middleware(['api', 'jwtMiddleware'])->group(function () {
-// Route::middleware(['api'])->group(function () {
-    
     /**************************************** Category Routes ***************************************************/
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::post('category/create', [CategoryController::class, 'createCategory']);
@@ -44,6 +39,18 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     Route::post('category/delete', [CategoryController::class, 'softDeleteCategory']);
     Route::post('category/restore', [CategoryController::class, 'restoreCategory']);
     Route::get('category/show', [CategoryController::class, 'getCategoryById']);
+    
+    /**************************************** Skill Routes ***************************************************/
+    Route::get('/skills', [SkillController::class, 'index']);
+    Route::post('skill/create', [SkillController::class, 'createSkill']);
+    Route::post('skill/update', [SkillController::class, 'updateSkill']);
+    Route::post('skill/delete', [SkillController::class, 'deleteSkill']);
+    Route::get('skill/show', [SkillController::class, 'getSkillById']);
+
+
+Route::middleware(['api', 'jwtMiddleware'])->group(function () {
+// Route::middleware(['api'])->group(function () {
+    
 
     /**************************************** Language Routes ***************************************************/
     Route::get('/languages', [LanguageController::class, 'index']);
@@ -52,12 +59,6 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     Route::post('language/delete', [LanguageController::class, 'deleteLanguage']);
     Route::get('language/show', [LanguageController::class, 'getLanguageById']);
 
-    /**************************************** Skill Routes ***************************************************/
-    Route::get('/skills', [SkillController::class, 'index']);
-    Route::post('skill/create', [SkillController::class, 'createSkill']);
-    Route::post('skill/update', [SkillController::class, 'updateSkill']);
-    Route::post('skill/delete', [SkillController::class, 'deleteSkill']);
-    Route::get('skill/show', [SkillController::class, 'getSkillById']);
 
     /**************************************** Corporates Routes ***************************************************/
     Route::get('/corporates', [CorporateController::class, 'index']);
