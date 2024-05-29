@@ -28,6 +28,8 @@ class CorporateController extends Controller
     {
         $data = $request->all();
 
+        // dd($data['logo']);
+
         $logo_new_name = $data['logo']->hashName();
         $data['logo']->move($this->createDirectory("corperates/logos"), $logo_new_name);
         $data['logo'] = "corperates/logos/" . $logo_new_name;

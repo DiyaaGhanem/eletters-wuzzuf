@@ -34,8 +34,8 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::middleware(['api', 'jwtMiddleware'])->group(function () {
-// Route::middleware(['api'])->group(function () {
+// Route::middleware(['api', 'jwtMiddleware'])->group(function () {
+Route::middleware(['api'])->group(function () {
     
     /**************************************** Category Routes ***************************************************/
     Route::get('/categories', [CategoryController::class, 'index']);

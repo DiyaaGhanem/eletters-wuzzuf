@@ -34,12 +34,12 @@ class CorporateRequest extends FormRequest
             'country'           => 'required',
             'city'              => 'required',
             'address'           => 'required',
-            'logo'              => 'nullable|image|mimes:jpeg,jpg,png,gif',
+            'logo'              => 'required|image|mimes:jpeg,jpg,png,gif',
             'phone'             => 'required|unique:corporates,phone',
             'email'             => 'required|unique:corporates,email',
             'status'            => 'required|in:Active,In Active,Blocked,Black Listed,Under Review,Not Completed',
             'user_id'           => "required|exists:$userConnection.users,id",
-            'logo'              => 'required|mimetypes:image/png,image/jpg,image/jpeg'
+            // 'logo'              => 'required|mimetypes:image/png,image/jpg,image/jpeg'
         ];
     }
 
