@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Route;
     Route::post('category/delete', [CategoryController::class, 'softDeleteCategory']);
     Route::post('category/restore', [CategoryController::class, 'restoreCategory']);
     Route::get('category/show', [CategoryController::class, 'getCategoryById']);
-    
+
     /**************************************** Skill Routes ***************************************************/
     Route::get('/skills', [SkillController::class, 'index']);
     Route::post('skill/create', [SkillController::class, 'createSkill']);
@@ -47,6 +47,10 @@ use Illuminate\Support\Facades\Route;
     Route::post('skill/delete', [SkillController::class, 'deleteSkill']);
     Route::get('skill/show', [SkillController::class, 'getSkillById']);
 
+    /**************************************** Corporates Routes ***************************************************/
+    Route::get('/corporates', [CorporateController::class, 'index']);
+    Route::post('corporate/update', [CorporateController::class, 'updateCorporate']);
+    Route::get('corporate/show', [CorporateController::class, 'getCorporateById']);
 
 Route::middleware(['api', 'jwtMiddleware'])->group(function () {
 // Route::middleware(['api'])->group(function () {
@@ -61,12 +65,12 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
 
 
     /**************************************** Corporates Routes ***************************************************/
-    Route::get('/corporates', [CorporateController::class, 'index']);
+    // Route::get('/corporates', [CorporateController::class, 'index']);
     Route::post('corporate/create', [CorporateController::class, 'createCorporate']);
-    Route::post('corporate/update', [CorporateController::class, 'updateCorporate']);
+    // Route::post('corporate/update', [CorporateController::class, 'updateCorporate']);
     Route::post('corporate/delete', [CorporateController::class, 'softDeleteCorporate']);
     Route::post('corporate/restore', [CorporateController::class, 'restoreCorporate']);
-    Route::get('corporate/show', [CorporateController::class, 'getCorporateById']);
+    // Route::get('corporate/show', [CorporateController::class, 'getCorporateById']);
 
     /**************************************** Jobs Routes ***************************************************/
     Route::get('/jobs', [JobController::class, 'index']);
