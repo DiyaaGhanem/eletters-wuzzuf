@@ -34,7 +34,7 @@ class ApplicationRequest extends FormRequest
             'expected_salary'        => 'required|numeric',
             'answers'                => 'required',
             'cv'                     => 'required|mimes:pdf',
-            'candidate_profile_link' => 'required|url',
+            'candidate_profile_link' => 'nullable|url',
             'job_id'                 => 'required|exists:jobs,id',
             'user_id'           => "required|exists:$userConnection.users,id",
         ];
