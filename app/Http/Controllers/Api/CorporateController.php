@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\CorporateRequest;
 use App\Http\Requests\Api\GetCorporateByIdRequest;
+use App\Http\Requests\Api\GetUserByIdRequest;
 use App\Http\Requests\Api\UpdateCorporateRequest;
 use App\Http\Resources\CorporateResource;
+use App\Http\Resources\UserResource;
 use App\Models\Corporate;
+use App\Models\User;
 use App\Traits\Responses;
 use App\Traits\UploadFilesTrait;
 use Illuminate\Http\Request;
@@ -20,7 +23,7 @@ class CorporateController extends Controller
     public function index()
     {
         $corporates = Corporate::with('user')->orderBy('id', 'DESC')->paginate(10);
-        
+
         return $this->successPaginated(data: CorporateResource::collection($corporates), status: Response::HTTP_OK, message: 'All Corporates.');
     }
 
@@ -93,5 +96,13 @@ class CorporateController extends Controller
         $corporate = Corporate::with('user')->findOrFail($data['corporate_id']);
 
         return $this->success(status: Response::HTTP_OK, message: 'Corporate Details.', data: new CorporateResource($corporate));
+    }
+
+    public function getCorporateByUserId(GetUserByIdRequest $request)
+    {
+        $data = $request->all();
+        $corporate = Corporate::where('user_id', $data['user_id'])->with('user')->first();
+
+        return $this->success(status: Response::HTTP_OK, message: 'Corporate Details!!.', data: new CorporateResource($corporate));
     }
 }
