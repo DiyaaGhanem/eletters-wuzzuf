@@ -105,4 +105,12 @@ class CorporateController extends Controller
 
         return $this->success(status: Response::HTTP_OK, message: 'Corporate Details!!.', data: new CorporateResource($corporate));
     }
+
+    public function getCorporateJobsByCorperateId(GetCorporateByIdRequest $request)
+    {
+        $data = $request->all();
+        $corporate = Corporate::with(['user', 'jobs'])->findOrFail($data['corporate_id']);
+
+        return $this->success(status: Response::HTTP_OK, message: 'All Corporate Jobs Details.', data: new CorporateResource($corporate));
+    }
 }

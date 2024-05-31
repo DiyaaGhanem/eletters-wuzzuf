@@ -30,6 +30,7 @@ class JobResource extends JsonResource
             'created_at' => $this->created_at,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'skills' => SkillResource::collection($this->whenLoaded('skills')),
+            'applications' => ApplicationResource::collection($this->whenLoaded('applications')),
             'corporate' => new CorporateResource($this->whenLoaded('corporate')),
             'applications_count' => $this->applications()->count()
         ];

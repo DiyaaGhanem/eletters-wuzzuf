@@ -52,10 +52,13 @@ Route::get('/corporates', [CorporateController::class, 'index']);
 Route::post('corporate/update', [CorporateController::class, 'updateCorporate']);
 Route::get('corporate/show', [CorporateController::class, 'getCorporateById']);
 Route::get('/get-corporate-by-userId', [CorporateController::class, 'getCorporateByUserId']);
+Route::get('/get-corporate-jobs-by-corporateId', [CorporateController::class, 'getCorporateJobsByCorperateId']);
 
 /**************************************** Jobs Routes ***************************************************/
 Route::get('/jobs', [JobController::class, 'index']);
 Route::get('job/show', [JobController::class, 'getJobById']);
+Route::get('/get-applications-by-jobId', [JobController::class, 'getApplicationsByJobId']);
+
 
 Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     // Route::middleware(['api'])->group(function () {

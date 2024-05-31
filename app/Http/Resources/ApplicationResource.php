@@ -26,7 +26,6 @@ class ApplicationResource extends JsonResource
             'job' => new JobResource($this->whenLoaded('job')),
             'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
             'user' => new UserResource($this->whenLoaded('user')),
-            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

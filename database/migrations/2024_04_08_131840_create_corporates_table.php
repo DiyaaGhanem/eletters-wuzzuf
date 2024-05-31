@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('corporates', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->bigInteger('tax_register')->unique();
-            $table->bigInteger('commercial_record')->unique();
+            $table->string('tax_register')->unique();
+            $table->string('commercial_record')->unique();
             $table->string('country');
             $table->string('city');
             $table->string('address');

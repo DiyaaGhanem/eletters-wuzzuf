@@ -29,6 +29,7 @@ class CorporateResource extends JsonResource
             'email' => $this->email,
             'status' => $this->status,
             'user' => new UserResource($this->whenLoaded('user')),
+            'jobs' => JobResource::collection($this->whenLoaded('jobs')),
         ];
     }
 }

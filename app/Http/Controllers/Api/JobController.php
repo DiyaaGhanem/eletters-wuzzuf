@@ -92,4 +92,12 @@ class JobController extends Controller
 
         return $this->success(status: Response::HTTP_OK, message: 'Job Details.', data: new JobResource($job));
     }
+
+    public function getApplicationsByJobId(GetJobByIdRequest $request)
+    {
+        $data = $request->all();
+        $job = Job::where('id', $data['job_id'])->with('applications', 'applications.user')->first();
+
+        return $this->success(status: Response::HTTP_OK, message: 'Job Details.', data: new JobResource($job));
+    }
 }
