@@ -12,7 +12,7 @@ class Corporate extends Model
 
     protected $table = 'corporates';
 
-    protected $fillable = ['name', 'tax_register', 'commercial_record', 'country', 'city', 'address', 'logo', 'phone', 'email', 'status', 'user_id'];
+    protected $fillable = ['name', 'tax_register', 'commercial_record', 'country', 'city', 'address', 'logo', 'phone', 'email', 'status', 'tax_register_document', 'commercial_record_document', 'id_face', 'id_back', 'owner_title', 'user_id'];
 
     public function jobs()
     {

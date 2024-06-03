@@ -25,18 +25,23 @@ class UpdateCorporateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'corporate_id'      => 'required|exists:corporates,id',
-            'name'              => 'required|unique:corporates,name,' . $this->corporate_id,
-            'tax_register'      => 'required|unique:corporates,tax_register,' . $this->corporate_id,
-            'commercial_record' => 'required|unique:corporates,commercial_record,' . $this->corporate_id,
-            'country'           => 'required',
-            'city'              => 'required',
-            'address'           => 'required',
-            'logo'              => 'nullable|mimetypes:image/png,image/jpg,image/jpeg',
-            'image'             => 'nullable|image|mimes:jpeg,jpg,png,gif',
-            'phone'             => 'required|unique:corporates,phone,' . $this->corporate_id,
-            'email'             => 'required|unique:corporates,email,' . $this->corporate_id,
-            'status'            => 'required|in:Active,In Active,Blocked,Black Listed,Under Review,Not Completed'
+            'corporate_id'               => 'required|exists:corporates,id',
+            'name'                       => 'required|unique:corporates,name,' . $this->corporate_id,
+            'tax_register'               => 'required|unique:corporates,tax_register,' . $this->corporate_id,
+            'commercial_record'          => 'required|unique:corporates,commercial_record,' . $this->corporate_id,
+            'country'                    => 'required',
+            'city'                       => 'required',
+            'address'                    => 'required',
+            'logo'                       => 'nullable|mimetypes:image/png,image/jpg,image/jpeg',
+            'tax_register_document'      => 'nullable|file|mimes:jpeg,jpg,png,gif,pdf',
+            'commercial_record_document' => 'nullable|file|mimes:jpeg,jpg,png,gif,pdf',
+            'id_face'                    => 'nullable|image|mimes:jpeg,jpg,png,gif',
+            'id_back'                    => 'nullable|image|mimes:jpeg,jpg,png,gif',
+            'phone'                      => 'required|unique:corporates,phone,' . $this->corporate_id,
+            'email'                      => 'required|unique:corporates,email,' . $this->corporate_id,
+            'owner_title'                => 'required|string',
+            'status'                     => 'required|in:Active,In Active,Blocked,Black Listed,Under Review,Not Completed',
+
         ];
     }
 
