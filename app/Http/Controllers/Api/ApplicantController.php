@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ApplicantRequest;
 use App\Http\Requests\Api\GetApplicantByIdRequest;
+use App\Http\Requests\Api\GetUserByIdRequest;
 use App\Http\Requests\Api\UpdateApplicantRequest;
 use App\Http\Resources\ApplicantResource;
 use App\Models\Applicant;
@@ -83,5 +84,21 @@ class ApplicantController extends Controller
         $applicant = Applicant::where('id', $data['applicant_id'])->with('user', 'educations', 'experiences', 'languages', 'skills')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'Applicant Details.', data: new ApplicantResource($applicant));
+    }
+
+    public function getApplicantCVByUserID(GetUserByIdRequest $request)
+    {
+        $data = $request->all();
+        $applicant = Applicant::where('user_id', $data['user_id'])->with('user', 'educations', 'experiences', 'languages', 'skills')->first();
+
+        return $this->success(status: Response::HTTP_OK, message: 'Applicant Details.', data: new ApplicantResource($applicant));
+    }
+
+    public function getApplicantByUserId(GetUserByIdRequest $request) {
+        $data = $request->all();
+        $applicant = Applicant::where('user_id', $data['user_id'])->with('user')->first();
+
+        return $this->success(status: Response::HTTP_OK, message: 'Applicant Details.', data: new ApplicantResource($applicant));
+
     }
 }

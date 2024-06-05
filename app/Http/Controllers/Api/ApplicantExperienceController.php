@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ExperienceRequest;
 use App\Http\Requests\Api\GetApplicantByIdRequest;
 use App\Http\Requests\Api\GetExperienceByIdRequest;
+use App\Http\Requests\Api\GetUserByIdRequest;
 use App\Http\Requests\Api\UpdateExperienceRequest;
 use App\Http\Resources\ApplicantResource;
 use App\Http\Resources\ExperienceResource;
@@ -31,6 +32,14 @@ class ApplicantExperienceController extends Controller
     {
         $data = $request->all();
         $applicant = Applicant::where('id', $data['applicant_id'])->with('user', 'experiences')->first();
+
+        return $this->success(status: Response::HTTP_OK, message: 'All Applicant Experiences Details.', data: new ApplicantResource($applicant));
+    }
+
+    public function getExperiencesByUserID(GetUserByIdRequest $request)
+    {
+        $data = $request->all();
+        $applicant = Applicant::where('user_id', $data['user_id'])->with('user', 'experiences')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'All Applicant Experiences Details.', data: new ApplicantResource($applicant));
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ApplicantLanguageRequest;
 use App\Http\Requests\Api\GetApplicantByIdRequest;
 use App\Http\Requests\Api\GetApplicantLanguageByIdRequest;
+use App\Http\Requests\Api\GetUserByIdRequest;
 use App\Http\Requests\Api\UpdateApplicantLanguageRequest;
 use App\Http\Resources\ApplicantLanguagesResource;
 use App\Http\Resources\ApplicantResource;
@@ -30,6 +31,14 @@ class ApplicantLanguagesController extends Controller
     {
         $data = $request->all();
         $applicant = Applicant::where('id', $data['applicant_id'])->with('user', 'languages.language')->first();
+
+        return $this->success(status: Response::HTTP_OK, message: 'All Applicant Languages Details.', data: new ApplicantResource($applicant));
+    }
+
+    public function getApplicantLanguagesByUserID(GetUserByIdRequest $request)
+    {
+        $data = $request->all();
+        $applicant = Applicant::where('user_id', $data['user_id'])->with('user', 'languages.language')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'All Applicant Languages Details.', data: new ApplicantResource($applicant));
     }

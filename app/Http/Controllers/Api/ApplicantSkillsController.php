@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\ApplicantSkillRequest;
 use App\Http\Requests\Api\GetApplicantByIdRequest;
 use App\Http\Requests\Api\GetApplicantSkillByIdRequest;
+use App\Http\Requests\Api\GetUserByIdRequest;
 use App\Http\Requests\Api\UpdateApplicantSkillRequest;
 use App\Http\Resources\ApplicantResource;
 use App\Http\Resources\ApplicantSkillsResource;
@@ -30,6 +31,14 @@ class ApplicantSkillsController extends Controller
     {
         $data = $request->all();
         $applicant = Applicant::where('id', $data['applicant_id'])->with('user', 'skills')->first();
+
+        return $this->success(status: Response::HTTP_OK, message: 'All Applicant Skills Details.', data: new ApplicantResource($applicant));
+    }
+
+    public function getApplicantSkillsByUserID(GetUserByIdRequest $request)
+    {
+        $data = $request->all();
+        $applicant = Applicant::where('user_id', $data['user_id'])->with('user', 'skills')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'All Applicant Skills Details.', data: new ApplicantResource($applicant));
     }

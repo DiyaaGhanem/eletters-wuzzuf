@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\EducationRequest;
 use App\Http\Requests\Api\GetApplicantByIdRequest;
 use App\Http\Requests\Api\GetEducationByIdRequest;
+use App\Http\Requests\Api\GetUserByIdRequest;
 use App\Http\Requests\Api\UpdateEducationRequest;
 use App\Http\Resources\ApplicantResource;
 use App\Http\Resources\EducationResource;
@@ -31,6 +32,14 @@ class ApplicantEducationController extends Controller
     {
         $data = $request->all();
         $applicant = Applicant::where('id', $data['applicant_id'])->with('user', 'educations')->first();
+
+        return $this->success(status: Response::HTTP_OK, message: 'All Applicant Educations Details.', data: new ApplicantResource($applicant));
+    }
+
+    public function getEducationsByUserID(GetUserByIdRequest $request)
+    {
+        $data = $request->all();
+        $applicant = Applicant::where('user_id', $data['user_id'])->with('user', 'educations')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'All Applicant Educations Details.', data: new ApplicantResource($applicant));
     }

@@ -18,6 +18,10 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'isActive' => $this->isActive,
+            'phone' => $this->phone,
+            'country_id' => $this->country_id,
+            'city_id' => $this->city_id,
             'corperate' => new CorporateResource($this->whenLoaded('corperate')),
             'applicant' => new ApplicantResource($this->whenLoaded('applicant')),
         ];
