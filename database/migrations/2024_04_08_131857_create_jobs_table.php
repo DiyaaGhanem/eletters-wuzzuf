@@ -22,8 +22,8 @@ return new class extends Migration
             $table->longText('job_requirement');
             $table->string('job_level');
             $table->longText('job_questions');
-            $table->float('min_salary');
-            $table->float('max_salary');
+            $table->float('min_salary')->nullable();
+            $table->float('max_salary')->nullable();
             $table->bigInteger('corporate_id')->unsigned()->nullable();
             $table->foreign("corporate_id")->references('id')->on('corporates')->nullOnDelete();
             $table->timestamps();

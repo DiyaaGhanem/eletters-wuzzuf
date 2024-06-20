@@ -20,7 +20,6 @@ class JobResource extends JsonResource
             'status' => $this->status,
             'department' => $this->department,
             'job_type' => $this->job_type,
-            'country' => $this->country,
             'job_location' => $this->job_location,
             'job_requirement' => $this->job_requirement,
             'job_level' => $this->job_level,
@@ -32,7 +31,9 @@ class JobResource extends JsonResource
             'skills' => SkillResource::collection($this->whenLoaded('skills')),
             'applications' => ApplicationResource::collection($this->whenLoaded('applications')),
             'corporate' => new CorporateResource($this->whenLoaded('corporate')),
-            'applications_count' => $this->applications()->count()
+            'applications_count' => $this->applications()->count(),
+            'country' => new CountryResource($this->whenLoaded('country')),
+            'city' => new CityResource($this->whenLoaded('city')),
         ];
     }
 }

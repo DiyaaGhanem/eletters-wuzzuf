@@ -22,7 +22,7 @@ class CorporateController extends Controller
 
     public function index()
     {
-        $corporates = Corporate::with('user')->orderBy('id', 'DESC')->paginate(10);
+        $corporates = Corporate::with('user', 'country', 'city')->orderBy('id', 'DESC')->paginate(10);
 
         return $this->successPaginated(data: CorporateResource::collection($corporates), status: Response::HTTP_OK, message: 'All Corporates.');
     }
@@ -31,30 +31,17 @@ class CorporateController extends Controller
     {
         $data = $request->all();
 
-        // dd($data['logo']);
-
-        $logo_new_name = $data['logo']->hashName();
-        $data['logo']->move($this->createDirectory("corperates/logos"), $logo_new_name);
-        $data['logo'] = $logo_new_name;
-
-        $tax_register_document_new_name = $data['tax_register_document']->hashName();
-        $data['tax_register_document']->move($this->createDirectory("corperates/documents"), $tax_register_document_new_name);
-        $data['tax_register_document'] =  $tax_register_document_new_name;
-
-        $commercial_record_document_new_name = $data['commercial_record_document']->hashName();
-        $data['commercial_record_document']->move($this->createDirectory("corperates/documents"), $commercial_record_document_new_name);
-        $data['commercial_record_document'] =  $commercial_record_document_new_name;
-
-        $id_face_new_name = $data['id_face']->hashName();
-        $data['id_face']->move($this->createDirectory("corperates/documents"), $id_face_new_name);
-        $data['id_face'] =  $id_face_new_name;
-
-        $id_back_new_name = $data['id_back']->hashName();
-        $data['id_back']->move($this->createDirectory("corperates/documents"), $id_back_new_name);
-        $data['id_back'] =  $id_back_new_name;
-
         $corporate = Corporate::create($data);
-        $corporate->load('user');
+
+        // Handle the logo after creating the corporate record
+        if ($request->hasFile('logo')) {
+            $file_new_name = $data['logo']->hashName();
+            $data['logo']->move($this->createDirectory("corporates/{$corporate->id}/logos"), $file_new_name);
+            $logo_new_name = "corporates/{$corporate->id}/logos/" . $file_new_name;
+            $corporate->update(['logo' => $logo_new_name]);
+        }
+
+        $corporate->load('user', 'country', 'city');
 
         return $this->success(status: Response::HTTP_OK, message: 'Corporate Created Successfully!!.', data: new CorporateResource($corporate));
     }
@@ -65,51 +52,16 @@ class CorporateController extends Controller
         $corporate = Corporate::findOrFail($data['corporate_id']);
 
         if ($request->hasFile('logo')) {
-            $this->deleteFile("corperates/logos/" . $corporate->logo);
+            $this->deleteFile($corporate->logo);
 
-            $logo_new_name = $data['logo']->hashName();
-            $data['logo']->move($this->createDirectory("corperates/logos"), $logo_new_name);
+            $file_new_name = $data['logo']->hashName();
+            $data['logo']->move($this->createDirectory("corporates/{$corporate->id}/logos"), $file_new_name);
+            $logo_new_name = "corporates/{$corporate->id}/logos/" . $file_new_name;
             $data['logo'] = $logo_new_name;
         }
 
-        if ($request->hasFile('tax_register_document')) {
-            $this->deleteFile("corperates/documents/" . $corporate->tax_register_document);
-
-            $tax_register_document_new_name = $data['tax_register_document']->hashName();
-            $data['tax_register_document']->move($this->createDirectory("corperates/documents"), $tax_register_document_new_name);
-            $data['tax_register_document'] = $tax_register_document_new_name;
-            $data['status'] = 'Under Review';
-        }
-
-        if ($request->hasFile('commercial_record_document')) {
-            $this->deleteFile("corperates/documents/" . $corporate->commercial_record_document);
-
-            $commercial_record_document_new_name = $data['commercial_record_document']->hashName();
-            $data['commercial_record_document']->move($this->createDirectory("corperates/documents"), $commercial_record_document_new_name);
-            $data['commercial_record_document'] = $commercial_record_document_new_name;
-            $data['status'] = 'Under Review';
-        }
-
-        if ($request->hasFile('id_face')) {
-            $this->deleteFile("corperates/documents/" . $corporate->id_face);
-
-            $id_face_new_name = $data['id_face']->hashName();
-            $data['id_face']->move($this->createDirectory("corperates/documents"), $id_face_new_name);
-            $data['id_face'] = $id_face_new_name;
-            $data['status'] = 'Under Review';
-        }
-
-        if ($request->hasFile('id_back')) {
-            $this->deleteFile("corperates/documents/" . $corporate->id_back);
-
-            $id_back_new_name = $data['id_back']->hashName();
-            $data['id_back']->move($this->createDirectory("corperates/documents"), $id_back_new_name);
-            $data['id_back'] = $id_face_new_name;
-            $data['status'] = 'Under Review';
-        }
-
         $corporate->update($data);
-        $corporate->load('user');
+        $corporate->load('user', 'country', 'city');
 
         return $this->success(status: Response::HTTP_OK, message: 'Corporate Updated Successfully!!.', data: new CorporateResource($corporate));
     }
@@ -145,7 +97,7 @@ class CorporateController extends Controller
     public function getCorporateById(GetCorporateByIdRequest $request)
     {
         $data = $request->all();
-        $corporate = Corporate::with('user')->findOrFail($data['corporate_id']);
+        $corporate = Corporate::with('user', 'country', 'city')->findOrFail($data['corporate_id']);
 
         return $this->success(status: Response::HTTP_OK, message: 'Corporate Details.', data: new CorporateResource($corporate));
     }
@@ -153,7 +105,7 @@ class CorporateController extends Controller
     public function getCorporateByUserId(GetUserByIdRequest $request)
     {
         $data = $request->all();
-        $corporate = Corporate::where('user_id', $data['user_id'])->with('user')->first();
+        $corporate = Corporate::where('user_id', $data['user_id'])->with('user', 'country', 'city')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'Corporate Details!!.', data: new CorporateResource($corporate));
     }
@@ -161,7 +113,7 @@ class CorporateController extends Controller
     public function getCorporateJobsByCorperateId(GetCorporateByIdRequest $request)
     {
         $data = $request->all();
-        $corporate = Corporate::with(['user', 'jobs'])->findOrFail($data['corporate_id']);
+        $corporate = Corporate::with(['user', 'jobs', 'country', 'city'])->findOrFail($data['corporate_id']);
 
         return $this->success(status: Response::HTTP_OK, message: 'All Corporate Jobs Details.', data: new CorporateResource($corporate));
     }

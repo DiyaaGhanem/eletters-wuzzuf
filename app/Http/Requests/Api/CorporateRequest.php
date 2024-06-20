@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Models\City;
+use App\Models\Country;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
@@ -25,25 +27,27 @@ class CorporateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userConnection = (new User())->getConnectionName();
-        
+        $userConnection    = (new User())->getConnectionName();
+        $cityConnection    = (new City())->getConnectionName();
+        $countryConnection = (new Country())->getConnectionName();
+
         return [
-            'name'                       => 'required|unique:corporates,name',
-            'tax_register'               => 'required|unique:corporates,tax_register',
-            'commercial_record'          => 'required|unique:corporates,commercial_record',
-            'country'                    => 'required',
-            'city'                       => 'required',
-            'address'                    => 'required',
-            'logo'                       => 'required|image|mimes:jpeg,jpg,png,gif',
-            'tax_register_document'      => 'required|file|mimes:jpeg,jpg,png,gif,pdf',
-            'commercial_record_document' => 'required|file|mimes:jpeg,jpg,png,gif,pdf',
-            'id_face'                    => 'required|image|mimes:jpeg,jpg,png,gif',
-            'id_back'                    => 'required|image|mimes:jpeg,jpg,png,gif',
-            'phone'                      => 'required|unique:corporates,phone',
-            'email'                      => 'required|email|unique:corporates,email',
-            'status'                     => 'required|in:Active,In Active,Blocked,Black Listed,Under Review,Not Completed',
-            'owner_title'                => 'required|string',
-            'user_id'                    => "required|exists:$userConnection.users,id",
+            'name'       => 'required|unique:corporates,name',
+            'address'    => 'required',
+            'logo'       => 'required|image|mimes:jpeg,jpg,png,gif',
+            'phone'      => 'required|unique:corporates,phone',
+            'email'      => 'required|email|unique:corporates,email',
+            'status'     => 'required|in:Active,In Active,Blocked,Black Listed,Under Review,Not Completed',
+            'user_id'    => "required|exists:$userConnection.users,id",
+            'city_id'    => "required|exists:$cityConnection.cities,id",
+            'country_id' => "required|exists:$countryConnection.countries,id",
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'status.in' => 'The status must be one of the following options: Active, In Active, Blocked, Black Listed, Under Review, Not Completed.',
         ];
     }
 

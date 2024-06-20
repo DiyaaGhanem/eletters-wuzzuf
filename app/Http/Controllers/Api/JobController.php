@@ -19,14 +19,14 @@ class JobController extends Controller
 
     public function index()
     {
-        $jobs = Job::with(['categories', 'skills', 'corporate', 'corporate.user'])->orderBy('id', 'DESC')->paginate(10);
+        $jobs = Job::with(['categories', 'skills', 'corporate', 'corporate.user', 'country', 'city'])->orderBy('id', 'DESC')->paginate(10);
 
         return $this->successPaginated(data: JobResource::collection($jobs), status: Response::HTTP_OK, message: 'All Jobs.');
     }
 
     public function jobsCount()
     {
-        $jobsCount = Job::count();
+        $jobsCount = Job::where('status', 'Published')->count();
 
         return response()->json([
             'status' => Response::HTTP_OK,
@@ -41,7 +41,7 @@ class JobController extends Controller
         $job = Job::create($data);
         $job->categories()->attach($data['category_id']);
         $job->skills()->attach($data['skill_id']);
-        $job->load(['categories', 'skills', 'corporate', 'corporate.user']);
+        $job->load(['categories', 'skills', 'corporate', 'corporate.user', 'country', 'city']);
         return $this->success(status: Response::HTTP_OK, message: 'Job Created Successfully!!.', data: new JobResource($job));
     }
 
@@ -53,7 +53,7 @@ class JobController extends Controller
         $job->categories()->sync($data['category_id']);
         $job->skills()->sync($data['skill_id']);
 
-        $job->load(['categories', 'skills', 'corporate', 'corporate.user']);
+        $job->load(['categories', 'skills', 'corporate', 'corporate.user', 'country', 'city']);
         return $this->success(status: Response::HTTP_OK, message: 'Job Updated Successfully!!.', data: new JobResource($job));
     }
 
@@ -88,7 +88,7 @@ class JobController extends Controller
     public function getJobById(GetJobByIdRequest $request)
     {
         $data = $request->all();
-        $job = Job::where('id', $data['job_id'])->with('categories', 'skills', 'corporate', 'corporate.user')->first();
+        $job = Job::where('id', $data['job_id'])->with('categories', 'skills', 'corporate', 'corporate.user', 'country', 'city')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'Job Details.', data: new JobResource($job));
     }
@@ -96,7 +96,7 @@ class JobController extends Controller
     public function getApplicationsByJobId(GetJobByIdRequest $request)
     {
         $data = $request->all();
-        $job = Job::where('id', $data['job_id'])->with('applications', 'applications.user')->first();
+        $job = Job::where('id', $data['job_id'])->with('applications', 'applications.user', 'country', 'city')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'Job Details.', data: new JobResource($job));
     }

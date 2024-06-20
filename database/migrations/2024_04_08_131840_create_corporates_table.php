@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('country');
             $table->string('city');
             $table->string('address');
-            $table->string('logo')->nullable();
+            $table->string('logo')->nullable()->default('default.png');
             $table->string('phone')->unique();
             $table->string('email')->unique();
             $table->enum('status', ['Active', 'In Active', 'Blocked', 'Black Listed', 'Under Review', 'Not Completed'])->default('Under Review');

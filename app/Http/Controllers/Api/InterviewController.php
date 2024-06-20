@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\GetInterviewByIdRequest;
+use App\Http\Requests\Api\GetReviewByIdRequest;
 use App\Http\Requests\Api\InterviewRequest;
 use App\Http\Requests\Api\UpdateInterviewRequest;
 use App\Http\Resources\InterviewResource;
+use App\Http\Resources\ReviewResource;
 use App\Models\Interview;
+use App\Models\Review;
 use App\Traits\Responses;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -77,5 +80,13 @@ class InterviewController extends Controller
         $interview = Interview::where('id', $data['interview_id'])->with(['review', 'review.application', 'review.application.user'])->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'Interview Details.', data: new InterviewResource($interview));
+    }
+
+    public function getInterviewByReviewId(GetReviewByIdRequest $request)
+    {
+        $data = $request->all();
+        $review = Review::where('id', $data['review_id'])->with('application', 'interview')->first();
+
+        return $this->success(status: Response::HTTP_OK, message: 'Review Details.', data: new ReviewResource($review));
     }
 }

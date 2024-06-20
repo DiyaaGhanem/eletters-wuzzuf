@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\GetInterviewByIdRequest;
 use App\Http\Requests\Api\GetInterviewStatusByIdRequest;
 use App\Http\Requests\Api\InterviewStatusRequest;
 use App\Http\Requests\Api\UpdateInterviewStatusRequest;
+use App\Http\Resources\InterviewResource;
 use App\Http\Resources\InterviewStatusResource;
+use App\Models\Interview;
 use App\Models\InterviewStatus;
 use App\Traits\Responses;
 use Illuminate\Http\Request;
@@ -78,5 +81,13 @@ class InterviewStatusController extends Controller
         $interview = InterviewStatus::where('id', $data['interview_status_id'])->with('application', 'application.user')->first();
 
         return $this->success(status: Response::HTTP_OK, message: 'Interview status Details.', data: new InterviewStatusResource($interview));
+    }
+
+    public function getInteriewStatusByInterviewId(GetInterviewByIdRequest $request)
+    {
+        $data = $request->all();
+        $interview = Interview::where('id', $data['interview_id'])->with(['review', 'review.interview', 'review.application', 'review.application.user'])->first();
+
+        return $this->success(status: Response::HTTP_OK, message: 'All Interview Statuses Details.', data: new InterviewResource($interview));
     }
 }

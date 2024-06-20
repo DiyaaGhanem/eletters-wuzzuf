@@ -2,6 +2,10 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Models\City;
+use App\Models\CorporateDocument;
+use App\Models\Country;
+use App\Models\Document;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
@@ -24,24 +28,80 @@ class UpdateCorporateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'corporate_id'               => 'required|exists:corporates,id',
-            'name'                       => 'required|unique:corporates,name,' . $this->corporate_id,
-            'tax_register'               => 'required|unique:corporates,tax_register,' . $this->corporate_id,
-            'commercial_record'          => 'required|unique:corporates,commercial_record,' . $this->corporate_id,
-            'country'                    => 'required',
-            'city'                       => 'required',
-            'address'                    => 'required',
-            'logo'                       => 'nullable|mimetypes:image/png,image/jpg,image/jpeg',
-            'tax_register_document'      => 'nullable|file|mimes:jpeg,jpg,png,gif,pdf',
-            'commercial_record_document' => 'nullable|file|mimes:jpeg,jpg,png,gif,pdf',
-            'id_face'                    => 'nullable|image|mimes:jpeg,jpg,png,gif',
-            'id_back'                    => 'nullable|image|mimes:jpeg,jpg,png,gif',
-            'phone'                      => 'required|unique:corporates,phone,' . $this->corporate_id,
-            'email'                      => 'required|unique:corporates,email,' . $this->corporate_id,
-            'owner_title'                => 'required|string',
-            'status'                     => 'required|in:Active,In Active,Blocked,Black Listed,Under Review,Not Completed',
+        $cityConnection    = (new City())->getConnectionName();
+        $countryConnection = (new Country())->getConnectionName();
 
+        return [
+            'corporate_id' => 'required|exists:corporates,id',
+            'name'         => 'required|unique:corporates,name,' . $this->corporate_id,
+            'address'      => 'required',
+            'logo'         => 'nullable|mimetypes:image/png,image/jpg,image/jpeg',
+            'phone'        => 'required|unique:corporates,phone,' . $this->corporate_id,
+            'email'        => 'required|unique:corporates,email,' . $this->corporate_id,
+            'status'       => 'nullable|in:Active,In Active,Blocked,Black Listed,Under Review,Not Completed',
+            'city_id'      => "required|exists:$cityConnection.cities,id",
+            'country_id'   => "required|exists:$countryConnection.countries,id",
+        ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            // Check if the input status is 'Active'
+            if ($this->input('status') == 'Active') {
+                // Fetch all required documents
+                $requiredDocuments = Document::where('is_required', true)->get();
+
+                // Fetch all corporate documents
+                $corporateDocuments = CorporateDocument::where('corporate_id', $this->corporate_id)->get();
+
+                // Check for missing or not approved documents
+                $missingDocuments = [];
+                $notApprovedDocuments = [];
+
+                foreach ($requiredDocuments as $requiredDocument) {
+                    $approvedDocument = $corporateDocuments->firstWhere('document_id', $requiredDocument->id);
+
+                    if (!$approvedDocument) {
+                        $missingDocuments[] = $requiredDocument->name;
+                    } else {
+                        // Check if there's any approved document with the same document_id
+                        $approved = $corporateDocuments->where('document_id', $requiredDocument->id)
+                            ->contains(function ($value, $key) {
+                                return $value->status === 'Approved';
+                            });
+
+                        if (!$approved) {
+                            $notApprovedDocuments[] = [
+                                'name' => $requiredDocument->name,
+                                'status' => $approvedDocument->status
+                            ];
+                        }
+                    }
+                }
+
+                if (!empty($missingDocuments)) {
+                    $validator->errors()->add('status', 'Corporate is missing required documents: ' . implode(', ', $missingDocuments));
+                }
+
+                if (!empty($notApprovedDocuments)) {
+                    $message = 'The following documents are not approved: ';
+                    foreach ($notApprovedDocuments as $doc) {
+                        $message .= "{$doc['name']} (Status: {$doc['status']}), ";
+                    }
+                    $message = rtrim($message, ', '); // Remove trailing comma and space
+                    $validator->errors()->add('status', $message);
+                }
+            }
+        });
+    }
+
+
+
+    public function messages(): array
+    {
+        return [
+            'status.in' => 'The status must be one of the following options: Active, In Active, Blocked, Black Listed, Under Review, Not Completed.',
         ];
     }
 

@@ -12,7 +12,7 @@ class Job extends Model
 
     protected $table = 'jobs';
 
-    protected $fillable = ['title', 'status', 'department', 'job_type', 'country', 'job_location', 'job_requirement', 'job_level', 'job_questions', 'min_salary', 'max_salary', 'corporate_id'];
+    protected $fillable = ['title', 'status', 'department', 'job_type', 'country_id', 'city_id', 'job_location', 'job_requirement', 'job_level', 'job_questions', 'min_salary', 'max_salary', 'corporate_id'];
     protected $casts = [
         'job_questions' => 'array',
     ];
@@ -37,5 +37,15 @@ class Job extends Model
     public function applications()
     {
         return $this->hasMany(Application::class);
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
     }
 }

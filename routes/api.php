@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\ApplicantSkillsController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CorporateController;
+use App\Http\Controllers\Api\CorporateDocumentController;
+use App\Http\Controllers\Api\DocumentController;
 use App\Http\Controllers\Api\InterviewController;
 use App\Http\Controllers\Api\InterviewStatusController;
 use App\Http\Controllers\Api\JobController;
@@ -61,7 +63,7 @@ Route::get('/get-applications-by-jobId', [JobController::class, 'getApplications
 
 
 Route::middleware(['api', 'jwtMiddleware'])->group(function () {
-    // Route::middleware(['api'])->group(function () {
+// Route::middleware(['api'])->group(function () {
 
 
     /**************************************** Language Routes ***************************************************/
@@ -71,6 +73,12 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     Route::post('language/delete', [LanguageController::class, 'deleteLanguage']);
     Route::get('language/show', [LanguageController::class, 'getLanguageById']);
 
+    /**************************************** Documents Routes ***************************************************/
+    Route::get('/documents', [DocumentController::class, 'index']);
+    Route::post('document/create', [DocumentController::class, 'createDocument']);
+    Route::post('document/update', [DocumentController::class, 'updateDocument']);
+    Route::get('document/show', [DocumentController::class, 'getDocumentById']);
+    Route::post('document/delete', [DocumentController::class, 'deleteDocument']);
 
     /**************************************** Corporates Routes ***************************************************/
     // Route::get('/corporates', [CorporateController::class, 'index']);
@@ -79,6 +87,13 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     Route::post('corporate/delete', [CorporateController::class, 'softDeleteCorporate']);
     Route::post('corporate/restore', [CorporateController::class, 'restoreCorporate']);
     // Route::get('corporate/show', [CorporateController::class, 'getCorporateById']);
+
+    /**************************************** corporates Documents Routes ***************************************************/
+    Route::get('/list-corporate-documents-by-corporateID', [CorporateDocumentController::class, 'index']);
+    Route::post('corporate-document/create', [CorporateDocumentController::class, 'createCorporateDocument']);
+    Route::post('corporate-document/update-status', [CorporateDocumentController::class, 'updateCorporateDocumentStatus']);
+    Route::get('corporate-document/show', [CorporateDocumentController::class, 'getCorporateDocumentById']);
+    Route::post('corporate-document/delete', [CorporateDocumentController::class, 'deleteCorporateDocument']);
 
     /**************************************** Jobs Routes ***************************************************/
     // Route::get('/jobs', [JobController::class, 'index']);
@@ -104,6 +119,7 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     Route::post('review/delete', [ReviewController::class, 'softDeleteReview']);
     Route::post('review/restore', [ReviewController::class, 'restoreReview']);
     Route::get('review/show', [ReviewController::class, 'getReviewById']);
+    Route::get('get-reviews-by-applicationId', [ReviewController::class, 'getReviewByApplicationId']);
 
     /**************************************** Interviews Routes ***************************************************/
     Route::get('/interviews', [InterviewController::class, 'index']);
@@ -112,6 +128,7 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     Route::post('interview/delete', [InterviewController::class, 'softDeleteInterview']);
     Route::post('interview/restore', [InterviewController::class, 'restoreInterview']);
     Route::get('interview/show', [InterviewController::class, 'getInterviewById']);
+    Route::get('get-interview-by-reviewId', [InterviewController::class, 'getInterviewByReviewId']);
 
     /**************************************** Interview Statuses Routes ***************************************************/
     Route::get('/interview-statuses', [InterviewStatusController::class, 'index']);
@@ -120,6 +137,7 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     Route::post('interview-status/delete', [InterviewStatusController::class, 'softDeleteInteriewStatus']);
     Route::post('interview-status/restore', [InterviewStatusController::class, 'restoreInteriewStatus']);
     Route::get('interview-status/show', [InterviewStatusController::class, 'getInteriewStatusById']);
+    Route::get('get-interview-status-by-interviewId', [InterviewStatusController::class, 'getInteriewStatusByInterviewId']);
 
     /**************************************** Applicants Routes ***************************************************/
     Route::get('/applicants', [ApplicantController::class, 'index']);

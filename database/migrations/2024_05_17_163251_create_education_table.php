@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('education', function (Blueprint $table) {
             $table->id();
             $table->string('university');
-            $table->string('logo')->nullable();
+            $table->string('logo')->nullable()->default('default.png');
             $table->string('major')->nullable();
             $table->string('grade')->nullable();
             $table->string('degree')->nullable();

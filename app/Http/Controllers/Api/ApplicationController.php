@@ -22,7 +22,6 @@ class ApplicationController extends Controller
         $applications = Application::with(['reviews', 'user', 'job'])->orderBy('id', 'DESC')->paginate(10);
 
         return $this->successPaginated(data: ApplicationResource::collection($applications), status: Response::HTTP_OK, message: 'All Applications.');
-
     }
 
     public function createApplication(ApplicationRequest $request)

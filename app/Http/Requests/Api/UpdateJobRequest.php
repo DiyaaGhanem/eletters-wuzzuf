@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Models\City;
+use App\Models\Country;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
@@ -24,21 +26,34 @@ class UpdateJobRequest extends FormRequest
      */
     public function rules(): array
     {
+        $cityConnection    = (new City())->getConnectionName();
+        $countryConnection = (new Country())->getConnectionName();
+
         return [
-            'job_id'      => 'required|exists:jobs,id',
+            'job_id'          => 'required|exists:jobs,id',
             'title'           => 'required|string',
-            'status'          => 'required|in:Pending,Published,Rejected,Not Published',
+            'status'          => 'nullable|in:Pending,Published,Rejected,Not Published',
             'department'      => 'required|string',
             'job_type'        => 'required|string',
-            'country'         => 'required|string',
             'job_location'    => 'required|string',
             'job_requirement' => 'required|string',
             'job_level'       => 'required|string',
             'job_questions'   => 'required|array',
-            'min_salary'      => 'required|numeric',
-            'max_salary'      => 'required|numeric',
+            'min_salary'      => 'nullable|numeric',
+            'max_salary'      => 'nullable|numeric',
             'category_id'     => 'required|array|min:1|exists:categories,id',
             'skill_id'        => 'required|array|min:1|exists:skills,id',
+            'city_id'         => "required|exists:$cityConnection.cities,id",
+            'country_id'      => "required|exists:$countryConnection.countries,id",
+        ];
+    }
+
+
+
+    public function messages(): array
+    {
+        return [
+            'status.in' => 'The status must be one of the following options: Pending, Published, Rejected, Not Published.',
         ];
     }
 
