@@ -12,10 +12,6 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    // public $connection = 'u107433794_auth_eliters';
-    // public $connection = env('DB_DATABASE_SECOND', 'u107433794_auth_eliters');
-
-
     protected $connection;
 
     public function __construct(array $attributes = [])

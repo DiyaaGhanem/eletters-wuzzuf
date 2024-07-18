@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\InternalTokenMiddleware;
 use App\Http\Middleware\JwtMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -65,6 +66,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'jwtMiddleware' => jwtMiddleware::class,
+        'internalTokenMiddleware' => InternalTokenMiddleware::class,
 
     ];
 }

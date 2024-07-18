@@ -36,42 +36,42 @@ use Illuminate\Support\Facades\Route;
 
 /**************************************** Category Routes ***************************************************/
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::post('category/create', [CategoryController::class, 'createCategory']);
-Route::post('category/update', [CategoryController::class, 'updateCategory']);
-Route::post('category/delete', [CategoryController::class, 'softDeleteCategory']);
-Route::post('category/restore', [CategoryController::class, 'restoreCategory']);
-Route::get('category/show', [CategoryController::class, 'getCategoryById']);
+Route::post('category/create', [CategoryController::class, 'createCategory'])->middleware('internalTokenMiddleware');
+Route::post('category/update', [CategoryController::class, 'updateCategory'])->middleware('internalTokenMiddleware');
+Route::post('category/delete', [CategoryController::class, 'softDeleteCategory'])->middleware('internalTokenMiddleware');
+Route::post('category/restore', [CategoryController::class, 'restoreCategory'])->middleware('internalTokenMiddleware');
+Route::get('category/show', [CategoryController::class, 'getCategoryById'])->middleware('internalTokenMiddleware');
 
 /**************************************** Skill Routes ***************************************************/
 Route::get('/skills', [SkillController::class, 'index']);
-Route::post('skill/create', [SkillController::class, 'createSkill']);
-Route::post('skill/update', [SkillController::class, 'updateSkill']);
-Route::post('skill/delete', [SkillController::class, 'deleteSkill']);
-Route::get('skill/show', [SkillController::class, 'getSkillById']);
+Route::post('skill/create', [SkillController::class, 'createSkill'])->middleware('internalTokenMiddleware');
+Route::post('skill/update', [SkillController::class, 'updateSkill'])->middleware('internalTokenMiddleware');
+Route::post('skill/delete', [SkillController::class, 'deleteSkill'])->middleware('internalTokenMiddleware');
+Route::get('skill/show', [SkillController::class, 'getSkillById'])->middleware('internalTokenMiddleware');
+
+/**************************************** Language Routes ***************************************************/
+Route::get('/languages', [LanguageController::class, 'index']);
+Route::post('language/create', [LanguageController::class, 'createLanguage'])->middleware('internalTokenMiddleware');
+Route::post('language/update', [LanguageController::class, 'updateLanguage'])->middleware('internalTokenMiddleware');
+Route::post('language/delete', [LanguageController::class, 'deleteLanguage'])->middleware('internalTokenMiddleware');
+Route::get('language/show', [LanguageController::class, 'getLanguageById'])->middleware('internalTokenMiddleware');
 
 /**************************************** Corporates Routes ***************************************************/
-Route::get('/corporates', [CorporateController::class, 'index']);
-Route::post('corporate/update', [CorporateController::class, 'updateCorporate']);
-Route::get('corporate/show', [CorporateController::class, 'getCorporateById']);
-Route::get('/get-corporate-by-userId', [CorporateController::class, 'getCorporateByUserId']);
-Route::get('/get-corporate-jobs-by-corporateId', [CorporateController::class, 'getCorporateJobsByCorperateId']);
+Route::get('/corporates', [CorporateController::class, 'index'])->middleware('internalTokenMiddleware');
+Route::post('corporate/update', [CorporateController::class, 'updateCorporate'])->middleware(['internalTokenMiddleware', 'jwtMiddleware']);
+Route::get('corporate/show', [CorporateController::class, 'getCorporateById'])->middleware(['internalTokenMiddleware', 'jwtMiddleware']);
+Route::get('/get-corporate-by-userId', [CorporateController::class, 'getCorporateByUserId'])->middleware(['internalTokenMiddleware', 'jwtMiddleware']);
+Route::get('/get-corporate-jobs-by-corporateId', [CorporateController::class, 'getCorporateJobsByCorperateId'])->middleware(['internalTokenMiddleware', 'jwtMiddleware']);
 
 /**************************************** Jobs Routes ***************************************************/
-Route::get('/jobs', [JobController::class, 'index']);
-Route::get('job/show', [JobController::class, 'getJobById']);
-Route::get('/get-applications-by-jobId', [JobController::class, 'getApplicationsByJobId']);
+// Route::get('/jobs', [JobController::class, 'index']);
+// Route::get('job/show', [JobController::class, 'getJobById']);
+// Route::get('/get-applications-by-jobId', [JobController::class, 'getApplicationsByJobId']);
 
 
 Route::middleware(['api', 'jwtMiddleware'])->group(function () {
-// Route::middleware(['api'])->group(function () {
+    // Route::middleware(['api'])->group(function () {
 
-
-    /**************************************** Language Routes ***************************************************/
-    Route::get('/languages', [LanguageController::class, 'index']);
-    Route::post('language/create', [LanguageController::class, 'createLanguage']);
-    Route::post('language/update', [LanguageController::class, 'updateLanguage']);
-    Route::post('language/delete', [LanguageController::class, 'deleteLanguage']);
-    Route::get('language/show', [LanguageController::class, 'getLanguageById']);
 
     /**************************************** Documents Routes ***************************************************/
     Route::get('/documents', [DocumentController::class, 'index']);
@@ -96,13 +96,14 @@ Route::middleware(['api', 'jwtMiddleware'])->group(function () {
     Route::post('corporate-document/delete', [CorporateDocumentController::class, 'deleteCorporateDocument']);
 
     /**************************************** Jobs Routes ***************************************************/
-    // Route::get('/jobs', [JobController::class, 'index']);
+    Route::get('/jobs', [JobController::class, 'index']);
     Route::get('/jobs-count', [JobController::class, 'jobsCount']);
     Route::post('job/create', [JobController::class, 'createJob']);
     Route::post('job/update', [JobController::class, 'updateJob']);
     Route::post('job/delete', [JobController::class, 'softDeleteJob']);
     Route::post('job/restore', [JobController::class, 'restoreJob']);
-    // Route::get('job/show', [JobController::class, 'getJobById']);
+    Route::get('job/show', [JobController::class, 'getJobById']);
+    Route::get('/get-applications-by-jobId', [JobController::class, 'getApplicationsByJobId']);
 
     /**************************************** Applications Routes ***************************************************/
     Route::get('/applications', [ApplicationController::class, 'index']);

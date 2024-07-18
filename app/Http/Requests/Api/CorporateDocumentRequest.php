@@ -72,8 +72,7 @@ class CorporateDocumentRequest extends FormRequest
             $valueRules = ['required']; // Make sure valueRules is an array
 
             if ($document->is_unique) {
-                $valueRules[] = Rule::unique('corporate_documents', 'value')->where(function ($query) {
-                    $document = Document::find($this->document_id);
+                $valueRules[] = Rule::unique('corporate_documents', 'value')->where(function ($query) use ($document) {
                     return $document && $document->is_unique == 1
                         ? $query->where('document_id', $this->document_id)
                         ->whereIn('status', ['Under Review', 'Approved'])
@@ -120,7 +119,6 @@ class CorporateDocumentRequest extends FormRequest
             'status.in' => 'The document status must be one of the following: Under Review, Approved, Rejected.',
         ];
     }
-
 
     public function withValidator($validator)
     {
